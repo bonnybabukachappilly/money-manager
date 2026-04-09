@@ -1,0 +1,65 @@
+[project]
+name = "backend"
+version = "0.1.0"
+authors = [
+    { name = "bonnybabukachappilly", email = "bonnybabukachappilly@gmail.com" },
+]
+requires-python = ">= 3.12"
+
+dependencies = [
+    "alembic==1.18.4",
+    "apscheduler==3.11.2",
+    "asyncpg==0.31.0",
+    "bcrypt==5.0.0",
+    "fastapi==0.129.0",
+    "pydantic-settings==2.13.1",
+    "pydantic[email]==2.12.5",
+    "python-jose==3.5.0",
+    "python-multipart>=0.0.22,<0.0.23",
+    "slowapi==0.1.9",
+    "sqlalchemy==2.0.48",
+    "uvicorn[standard]==0.42.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+
+[tool.pixi.dependencies]
+python = "3.12.*"
+postgresql = "18.*"
+
+[tool.pixi.pypi-dependencies]
+backend = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+dev = "PYTHONPATH=src uvicorn app.main:app --reload --port 8080"
+migrate = "PYTHONPATH=src alembic upgrade head"
+makemigrations = "PYTHONPATH=src alembic revision --autogenerate -m"
+
+
+# RUN in terminal  > export $(grep -v '^#' .env | xargs) < for bellow tasks to load env
+[tool.pixi.tasks.db-init]
+cmd = "printf %s \"$POSTGRES_PASSWORD\" > pass.txt && initdb -D .pixi/db_data --auth=scram-sha-256 --pwfile=pass.txt && rm pass.txt"
+env = { POSTGRES_PASSWORD = "$POSTGRES_PASSWORD" }
+
+[tool.pixi.tasks.db-start]
+cmd = "pg_ctl -D .pixi/db_data -l .pixi/db_log -o '-p 5435' start && sleep 2 && PGPASSWORD=\"$POSTGRES_PASSWORD\" createdb -h localhost -p 5435 -U \"$POSTGRES_USER\" \"$POSTGRES_DB\" || true"
+env = { POSTGRES_PASSWORD = "$POSTGRES_PASSWORD", POSTGRES_USER = "$POSTGRES_USER", POSTGRES_DB = "$POSTGRES_DB" }
+
+[tool.pixi.tasks.db-stop]
+cmd = "pg_ctl -D .pixi/db_data stop"
+
+[tool.pixi.tasks.db-reset]
+cmd = "pixi run db-stop || true && rm -rf .pixi/db_data && pixi run db-init && pixi run db-start"
+
+[tool.pixi.tasks.db-clean]
+cmd = "rm -f .pixi/db_data/postmaster.pid"

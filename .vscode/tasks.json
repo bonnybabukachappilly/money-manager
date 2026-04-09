@@ -1,0 +1,37 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Server",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/backend/src"
+            },
+            "linux":{
+                "command": "pixi run dev"
+            }
+        }, 
+        {
+            "label": "Start DB",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/backend/src"
+            },
+            "linux":{
+                "command": "export $(grep -v '^#' .env | xargs) && pixi run db-start"
+            }
+        },
+        {
+            "label": "Stop DB",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/backend/src"
+            },
+            "linux":{
+                "command": "export $(grep -v '^#' .env | xargs) && pixi run db-stop"
+            }
+        },
+    ]
+}

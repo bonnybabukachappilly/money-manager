@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"cSpell.words": [
+			"apscheduler",
+			"asyncpg",
+			"autoflush",
+			"checkpw",
+			"createdb",
+			"createuser",
+			"fastapi",
+			"gensalt",
+			"hashpw",
+			"initdb",
+			"makemigrations",
+			"PGPASSWORD",
+			"poolclass",
+			"pydantic",
+			"PYTHONPATH",
+			"slowapi",
+			"sqlalchemy",
+			"uvicorn"
+		]
+	}
+}
