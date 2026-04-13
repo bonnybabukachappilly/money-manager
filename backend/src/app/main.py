@@ -12,6 +12,8 @@ from app.core.logging import configure_logging
 from app.db import engine
 from fastapi.responses import JSONResponse
 
+from app.api.v1 import v1_router
+
 configure_logging()
 
 
@@ -69,3 +71,6 @@ async def health_check() -> JSONResponse:
 
     return JSONResponse(content=payload,
                         status_code=200 if db_status == "ok" else 503)
+
+
+app.include_router(v1_router)

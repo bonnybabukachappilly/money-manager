@@ -16,13 +16,17 @@
 			"gensalt",
 			"hashpw",
 			"initdb",
+			"joinedload",
 			"makemigrations",
+			"ondelete",
 			"PGPASSWORD",
 			"poolclass",
+			"pwfile",
 			"pydantic",
 			"PYTHONPATH",
 			"slowapi",
 			"sqlalchemy",
+			"unbilled",
 			"uvicorn"
 		]
 	}
