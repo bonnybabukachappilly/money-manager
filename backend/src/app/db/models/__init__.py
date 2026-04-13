@@ -4,11 +4,13 @@ from .accounts import (
     CreditAccountModel, LoanAccountModel, EMIAccountModel,
     BaseAccountModel
 )
+from .categories import CategoryModel
 
 
 __all__: list[str] = [
     'UserModel',
     'SavingsAccountModel', 'CashAccountModel', 'WalletAccountModel',
     'CreditAccountModel', 'LoanAccountModel', 'EMIAccountModel',
-    'BaseAccountModel'
+    'BaseAccountModel',
+    'CategoryModel'
 ]

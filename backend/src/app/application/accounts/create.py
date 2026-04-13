@@ -17,11 +17,10 @@ class CreateNewAccount:
         self._repo: AccountRepository = account_repo
         self._session: AsyncSession = session
 
-    async def execute(self, data: dict) -> Account:
+    async def execute(self, data: dict, user: UUID) -> Account:
         _name: str = data["account_name"]
-        _user: UUID = data["user"]
 
-        _account: Account | None = await self._repo.get_by_name(_name, _user)
+        _account: Account | None = await self._repo.get_by_name(_name, user)
 
         if _account is not None:
             raise AccountNameExistsException('Account name already exists.')

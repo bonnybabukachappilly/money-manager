@@ -12,6 +12,11 @@ from .accounts import (
     RecurringCreateSchema, RecurringResponseSchema
 )
 
+from .categories import (
+    CategoryCreateSchema, CategoryResponseSchema,
+    CategoryGetSchema, CategoryUpdateSchema
+)
+
 __all__: list[str] = [
     'UserLoginSchema', 'UserRegisterSchema',
     'UserResponseSchema', 'TokenResponseSchema',
@@ -20,5 +25,7 @@ __all__: list[str] = [
     'AccountResponse', 'CreditAccountResponse',
     'LoanAccountResponse', 'EMIAccountResponse',
     'GeneralCreateSchema', 'GeneralResponseSchema',
-    'RecurringCreateSchema', 'RecurringResponseSchema'
+    'RecurringCreateSchema', 'RecurringResponseSchema',
+    'CategoryCreateSchema', 'CategoryResponseSchema',
+    'CategoryGetSchema', 'CategoryUpdateSchema'
 ]

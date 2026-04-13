@@ -1,5 +1,3 @@
-# app/core/logging.py
-
 import json
 import logging
 import sys
@@ -10,37 +8,27 @@ from app.core import Settings, get_settings
 
 
 class JsonFormatter(logging.Formatter):
-    """
-    Simple structured JSON log formatter.
-    Docker-ready (stdout).
-    """
-
     def __init__(self, environment: str) -> None:
         super().__init__()
         self.env: str = environment
 
     def format(self, record: logging.LogRecord) -> str:
-        log_record: dict[str, str] = {
+        log_record = {
             'timestamp': datetime.now(timezone.utc).isoformat(),
             'level': record.levelname,
             'logger': record.name,
             'message': record.getMessage(),
             'environment': self.env,
         }
-
         if record.exc_info:
             log_record['exception'] = self.formatException(record.exc_info)
-
         return json.dumps(log_record)
 
 
 def configure_logging() -> None:
-    """
-    Configure global logging for the application.
-    Must be called before FastAPI app initialization.
-    """
-
     settings: Settings = get_settings()
+
+    formatter_to_use = 'json' if settings.environment == 'production' else 'standard'
 
     dictConfig(
         {
@@ -50,13 +38,17 @@ def configure_logging() -> None:
                 'json': {
                     '()': JsonFormatter,
                     'environment': settings.environment,
-                }
+                },
+                'standard': {
+                    'format': '%(asctime)s | %(levelname)-8s | %(name)s:%(lineno)d | %(message)s',
+                    'datefmt': '%Y-%m-%d %H:%M:%S',
+                },
             },
             'handlers': {
                 'console': {
                     'class': 'logging.StreamHandler',
                     'stream': sys.stdout,
-                    'formatter': 'json',
+                    'formatter': formatter_to_use,  # Dynamically switched
                 }
             },
             'root': {
@@ -65,19 +57,21 @@ def configure_logging() -> None:
             },
             'loggers': {
                 'uvicorn': {
-                    'handlers': ['console'],
-                    'level': settings.log_level,
-                    'propagate': False,
+                    'level': 'INFO',
+                    'handlers': ['console'], 'propagate': False
                 },
                 'uvicorn.error': {
-                    'handlers': ['console'],
-                    'level': settings.log_level,
-                    'propagate': False,
+                    'level': 'INFO',
+                    'handlers': ['console'], 'propagate': False
                 },
                 'uvicorn.access': {
-                    'handlers': ['console'],
-                    'level': settings.log_level,
-                    'propagate': False,
+                    'level': 'INFO',
+                    'handlers': ['console'], 'propagate': False
+                },
+                # Reduce SQL noise
+                'sqlalchemy.engine': {
+                    'level': 'WARNING',
+                    'handlers': ['console'], 'propagate': False
                 },
             },
         }

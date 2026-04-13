@@ -1,8 +1,8 @@
 # app/api/v1/router/accounts.py
 import logging
 
-from app.api.dependencies import SessionDeps, AccountRepoDeps, CurrentUserDep
 from fastapi import APIRouter, status, Request, HTTPException
+from app.api.dependencies import SessionDeps, AccountRepoDeps, CurrentUserDep
 from app.domain import Account
 from app.schemas import GeneralCreateSchema, GeneralResponseSchema
 from app.exceptions.database import AccountNameExistsException
@@ -30,10 +30,10 @@ async def new_account(
     )
 
     try:
-        data = body.model_dump()
-        data['user'] = current_user.id
-
-        account: Account = await use_case.execute(data)
+        account: Account = await use_case.execute(
+            data=body.model_dump(),
+            user=current_user.id
+        )
 
         await session.commit()
 

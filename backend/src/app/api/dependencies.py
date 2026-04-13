@@ -8,7 +8,7 @@ from app.db import get_db_session
 from app.domain import User
 from app.application.user import GetCurrentUser
 from app.infrastructure.repositories import (
-    SQLUserRepository, SQLAccountRepository
+    SQLUserRepository, SQLAccountRepository, SQLCategoryRepository
 )
 from fastapi import Depends, HTTPException, status
 from app.exceptions.application import (
@@ -39,6 +39,10 @@ def get_account_repository(session: SessionDeps) -> SQLAccountRepository:
     return SQLAccountRepository(session)
 
 
+def get_category_repository(session: SessionDeps) -> SQLCategoryRepository:
+    return SQLCategoryRepository(session)
+
+
 UserRepoDeps = Annotated[
     SQLUserRepository,
     Depends(get_user_repository)]
@@ -46,6 +50,11 @@ UserRepoDeps = Annotated[
 AccountRepoDeps = Annotated[
     SQLAccountRepository,
     Depends(get_account_repository)]
+
+
+CategoryRepoDeps = Annotated[
+    SQLCategoryRepository,
+    Depends(get_category_repository)]
 
 
 # ---------- Auth dependency ----------
